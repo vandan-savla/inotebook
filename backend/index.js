@@ -4,12 +4,20 @@ const express = require('express')
 connectToMongo();
 
 const app = express()
-const port = 3000
+app.use(express.json());
+const port = 5000
+const auth=require('./routes/auth')
+const notes=require('./routes/notes')
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+
+// available Routes
+
+
+app.use('/api/auth',auth);
+app.use('/api/notes',notes);
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
