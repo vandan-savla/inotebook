@@ -69,14 +69,49 @@ router.put('/updatenote/:id', fetchUser,
       }
 
 
-      
-         
-         note = await Notes.findByIdAndUpdate(req.params.id,{$set:newNote},{new:true});
-         res.json({note})
+      try {
+
+         note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true });
+         res.json({ note })
       }
 
-   )
+      catch (error) {
+         res.status(500).json({ message: "Some error Occured" });
 
+      }
+
+   })
+
+// to delete an existing note of loggedin user
+
+router.delete('/deletenote/:id', fetchUser,
+   async (req, res) => {
+
+
+      let note = await Notes.findById(req.params.id);
+
+      // checking the above validation 
+      if (!note) {
+         return res.status(400).send("Note not Found");
+      }
+      if (note.user.toString() !== req.user.id) {
+         return res.status(401).send("Not authorized to update");
+      }
+
+
+      try {
+
+         note = await Notes.findByIdAndDelete(req.params.id);
+         res.json({"message":"Deleted Successfully",note:note})
+
+      }
+
+      catch (error) {
+         res.status(500).json({ message: "Some error Occured" });
+
+      }
+
+   })
 
 
 
